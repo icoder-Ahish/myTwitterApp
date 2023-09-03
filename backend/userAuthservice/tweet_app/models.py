@@ -13,6 +13,8 @@ class TweetModel(models.Model):
                                  blank=True)
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)
+    # is_liked = models.BooleanField(default=False)
+    
 
     class Meta:
         ordering = ('-created',)
@@ -20,13 +22,30 @@ class TweetModel(models.Model):
     def __str__(self):
         return f'{self.author.first_name} writes {self.body[:20]}...'
 
+    @property
+    def like_count(self):
+        return self.users_like.all().count()
 
 
-    # @property
-    # def like_count(self):
-    #     return self.users_like.all().count()
+class CommentModel(models.Model):
+    tweet = models.ForeignKey('TweetModel', on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(verbose_name="comment")
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ('created',)
+
+    def __str__(self):
+        return f'Comment by {self.author.username} on tweet by {self.tweet.author.username}'
 
 
+
+
+
+    
+    
+    
 class Mention(models.Model):
     author = models.ForeignKey(User,
                                related_name='mentions',
@@ -72,5 +91,5 @@ class Retweet(models.Model):
         return f'{self.author.username} retweet to {self.tweet.body[:10]} with {self.retweet[:10]}'
 
     
-    # def like_count(self):
+    def like_count(self):
         return self.users_like.all().count()

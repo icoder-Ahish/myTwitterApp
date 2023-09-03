@@ -11,6 +11,7 @@ import messagePage from '../components/messagePage.vue'
 import homePage from '@/views/homePage.vue'
 import profilePage from '../components/profilePage.vue'
 import userviewPage from '../components/userviewPage.vue'
+import commentsPage from '../components/commentPage.vue'
 // import homePag from '@/components/homePage.vue'
 
 
@@ -19,6 +20,11 @@ const routes = [
     name: 'login',
     path: '/login',
     component: loginPage
+  },
+  {
+    name: 'comments',
+    path: '/comment/:tweetId/',
+    component: commentsPage
   },
   {
     name: 'profile',

@@ -1,143 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    
-    <title>Document</title>
-    <style>
-        .container{
-            border: 1px solid black;
-            height: 500px;
-            width: 360px;
-            margin-top: 50px;
-            border-radius: 20px;
-            box-shadow: 5px 5px 3px black;
-            background-color: lightpink;
-        }
-        body{
-            background-color: lightslategray;
-        }
-        h4{
-            color: black;
-            margin-left: 90px;
-            padding-top: 20px;
-            font-size: 23px;
-        }
-      .form{
-        margin-top: 30px;
-        margin-left: 10px;
-        margin-right: 10px;
-        height: 40px;
-      }
-     .button{
-        width: 50px;
-        margin-left: 20px;
-        font-size: 16px;
-        border-radius: 100px;
-        border-color: white ;
-        padding: 8px;
-        box-shadow: 5px 5px 5px black;
-     }                 
-      .operator{
-        background-color: darkblue;
-        color: white;
-        border-color: darkblue;
-      }
-      .name{
-        background-color: brown;
-        color: white;
-        border-color: brown;
-      }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single Page Website</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li><a href="#home"><i class="glyphicon glyphicon-home"></i>Home</a></li>
+        <li><a href="#about"><i class="glyphicon glyphicon-user"></i>About</a></li>
+        <li><a href="#Resume"><i class="glyphicon glyphicon-file"></i>Resume</a></li>
+        <li><a href="#Portfolio"><i class="glyphicon glyphicon-sound-dolby"></i>Portfolio</a></li>
+        <li><a href="#Contact"><i class="glyphicon glyphicon-envelope"></i>Contact</a></li>
+      </ul>
+    </nav>
 
-    <form>
-        <div class="container">
-           <h4>CALCULATOR</h4>
-          <div class="form">
-              <form action="#" name="calculator" class="main">
-                  <input type="text" class="display form-control" name="display" id="display"><br><br>
-                     <button class="button operator"  value="AC">AC</button>
-                     <button class="button operator"  value="%">%</button>
-                     <button class="button operator"  value="<"><</button>
-                     <button class="button operator"  value="/">/</button><br><br>
-                     <button class="button number"  value="7">7</button>
-                     <button class="button number"  value="8">8</button>
-                     <button class="button number"  value="9">9</button>
-                     <button class="button operator"  value="*">*</button><br><br>
-                     <button class="button number"  value="4">4</button>
-                     <button class="button number"  value="5">5</button>
-                     <button class="button number"  value="6">6</button>
-                     <button class="button operator"  value="-">-</button><br><br>
-                     <button class="button number"  value="1">1</button>
-                     <button class="button number"  value="2">2</button>
-                     <button class="button number"  value="3">3</button>
-                     <button class="button operator"  value="+">+</button><br><br>
-                     <button class="button number"  value="+/-">+/-</button>
-                     <button class="button number"  value="0">0</button>
-                     <button class="button number"  value=".">0</button>
-                     <button class="button name"  value="=">=</button>
-                </form>
-          </div>
-        </div>
-        
-    </form>
+    <div class="sections">
+      <section id="home" class="section">
+        <h1>Home Section</h1>
+        <!-- Your home content here -->
+      </section>
+
+      <section id="about" class="section">
+        <h1>About Section</h1>
+        <!-- Your about content here -->
+      </section>
+
+      <section id="skill" class="section">
+        <h1>Contact Section</h1>
+        <!-- Your contact content here -->
+      </section>
+
+      <section id="Resume" class="section">
+        <h1>Contact Section</h1>
+        <!-- Your contact content here -->
+      </section>
+      <section id="Portfolio" class="section">
+        <h1>Contact Section</h1>
+        <!-- Your contact content here -->
+      </section>
+
+      <section id="Contact" class="section">>
+        <h1>Contact Section</h1>
+        <!-- Your contact content here -->
+      </section>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
 
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const display = document.getElementById('display');
-    const buttons = document.querySelectorAll('.button');
-
-    let currentInput = '';
-
-    function handleNumberClick(value) {
-      if (value === '+' || value === '-' || value === '*' || value === '/') {
-        if (currentInput === '') return;
-        currentInput += ' ' + value + ' ';
-      } else {
-        currentInput += value;
-      }
-      display.value = currentInput;
-    }
-
-    function handleEqualClick() {
-      try {
-        const result = eval(currentInput);
-        currentInput = result.toString();
-        display.value = currentInput;
-      } catch (error) {
-        display.value = 'Error';
-      }
-    }
-
-    function clearCalculator() {
-      currentInput = '';
-      display.value = '';
-    }
-
-    buttons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        const value = button.textContent;
-        if (value === '=') {
-          handleEqualClick();
-        } else if (value === 'AC') {
-          clearCalculator();
-        } else {
-          handleNumberClick(value);
-        }
-      });
-    });
-  });
-</script>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+  }
   
+  nav {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    width: 20%;
+    height: 100vh;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  nav li {
+    margin: 0;
+  }
+  
+  nav a {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 0;
+  }
+  
+  .container {
+    display: flex;
+    width: 100%;
+    height: 600px;
+  }
+  
+  .sections {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 800px;
+  }
+  
+  .section {
+    flex-grow: 1;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc; /* Add a border for separation */
+  }
+  
+</style>

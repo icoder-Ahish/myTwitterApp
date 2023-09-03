@@ -89,12 +89,17 @@
                 <p>0</p>
               </div>
               <div class="flex items-center text-sm text-white">
-                <button href=""><i class="fas fa-heart mr-3"></i></button>
-                <p>2</p>
+
+                <button @click="likeTweet(tweet.id)" v-if="!tweet.users_like.includes(userIdNumber)">
+                      <i class="far fa-thumbs-up mr-3"></i>
+                </button>
+                <button @click="unlikeTweet(tweet.id)" v-else>
+                      <i class="fas fa-thumbs-down mr-3"></i>
+                </button>
+               <p>{{ tweet.users_like.length  }}</p>
+
               </div>
-              <div class="flex items-center text-white">
-                <button href="" @click.prevent="deleteTweet(tweet.id)"> <i class="fa-solid fa-trash mr-3"></i> </button>
-              </div>
+             
             </div>
           </div>
         </div>
@@ -121,15 +126,17 @@ export default {
   },
   data() {    
     return {
-      userId: '', viewUserId: '', username: '', userProfile: [],  user_data: [],
+      userId: null, viewUserId: '', username: '', userProfile: [],  user_data: [],
        isfollowing: true,
       tweetList: [],
+      userIdNumber: null,
      }
     },
     created() {
     this.userId = localStorage.getItem('user_id')    
     this.viewUserId = this.$route.params.userId;
     this.username =  this.$route.params.username;
+    this.userIdNumber = parseInt(this.userId)
  
     this.profileFetch(this.viewUserId)
     this.user_dataFetch(this.viewUserId)
@@ -137,7 +144,23 @@ export default {
     this.filterFollow_user(this.userId, this.viewUserId)
   },
   methods:{
-    
+    likeTweet(tweetID) {
+      const data = {
+          "user_id" : this.userId       }
+        axios.post(`http://localhost:8000/api/v2/tweet/${tweetID}/like/`,data)
+        .then((response)=>{          
+          this.fetchTweets(this.viewUserId);
+        })        
+    },
+    unlikeTweet(tweetID) {
+      const data = {
+          "user_id" : this.userId
+        }
+        axios.post(`http://localhost:8000/api/v2/tweet/${tweetID}/unlike/`,data)
+        .then((response)=>{         
+          this.fetchTweets(this.viewUserId);
+        })
+    },
     filterFollow_user(userId, viewUserId) {
      const userId2 = userId;
      const viewId2 = viewUserId;

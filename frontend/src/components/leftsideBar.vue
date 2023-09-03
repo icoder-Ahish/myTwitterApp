@@ -13,10 +13,10 @@
                         <p class="text-lg font-semibold text-left hidden lg:block"> Home </p>
                     </router-link>
 
-                    <button  class="hover:bg-slate-500 hover:text-blue flex items-center py-2 px-4 hover:bg-lightblue rounded-full mr-auto mb-3 }">
+                    <!-- <button  class="hover:bg-slate-500 hover:text-blue flex items-center py-2 px-4 hover:bg-lightblue rounded-full mr-auto mb-3 }">
                         <i class="fas fa-hashtag text-2xl mr-4 text-left"></i>
                         <p class="text-lg font-semibold text-left hidden lg:block"> Explore </p>
-                    </button>
+                    </button> -->
 
                     <button  class="hover:bg-slate-500 hover:text-blue flex items-center py-2 px-4 hover:bg-lightblue rounded-full mr-auto mb-3 }">
                         <i class="far fa-bell text-2xl mr-4 text-left"></i>
@@ -35,10 +35,11 @@
                 </div>
 
 
-                <button class="text-white mb-6 bg-blue-950 rounded-full font-semibold focus:outline-none w-12 h-12 lg:h-auto lg:w-full p-3 hover:bg-blue-600">
+                <button @click="emitFocusEvent" class="text-white mb-6 bg-blue-950 rounded-full font-semibold focus:outline-none w-12 h-12 lg:h-auto lg:w-full p-3 hover:bg-blue-600">
                 <p class="hidden lg:block">Tweet</p>
                 <i class="fas fa-plus lg:hidden"></i>
-                </button>
+                
+               </button>
 
                 <hr>
                 <!-- Dropdown -->
@@ -85,6 +86,9 @@ export default {
     this.username = localStorage.getItem('username');
 },
 methods:{
+    emitFocusEvent() {
+      this.$emit('focus-input'); // Emit custom event to parent component
+    },
     logOut(){
         localStorage.removeItem('user_id')
         localStorage.removeItem('username')

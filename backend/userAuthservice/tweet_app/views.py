@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .models import TweetModel
 from .serializers import TweetSerializer
+from rest_framework.decorators import action
 
 User = get_user_model()
 
@@ -57,5 +58,42 @@ class TweetViewSet(viewsets.ModelViewSet):
 
         # Return the tweets authored by the user
         return TweetModel.objects.filter(author=user)
-       
+    
+    
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        tweet = self.get_object()  # Get the tweet instance
+        user_id = request.data.get('user_id')  # Get the user ID from the request data
 
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({"message": "User does not exist."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if tweet.users_like.filter(pk=user.pk).exists():
+            return Response({"message": "User has already liked this tweet."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        tweet.users_like.add(user)
+        serializer = TweetSerializer(tweet)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def unlike(self, request, pk=None):
+        tweet = self.get_object()  # Get the tweet instance
+        user_id = request.data.get('user_id')  # Get the user ID from the request data
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({"message": "User does not exist."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if not tweet.users_like.filter(pk=user.pk).exists():
+            return Response({"message": "User has not liked this tweet."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        tweet.users_like.remove(user)
+        serializer = TweetSerializer(tweet)
+        return Response(serializer.data, status=status.HTTP_200_OK)

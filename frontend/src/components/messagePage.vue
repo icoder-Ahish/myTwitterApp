@@ -189,6 +189,14 @@ export default {
     this.fetchUsers();
     this.firstLetter = this.getFirstLetter(this.username);
   },
+
+  mounted() {
+    window.addEventListener('keydown', this.sendEnter);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.sendEnter);
+  },
   methods: {
     formatDate(timestamp) {
     // Format the timestamp into a human-readable format (you can use libraries like moment.js for this)
@@ -216,12 +224,11 @@ export default {
 
       this.fetchMessages(recevier_id)
     },
+
     async fetchMessages(rid) {
       const receiverId = rid; 
       const senderId = this.userId;
 
-      console.log(receiverId)
-      console.log(senderId) 
     try {
       const response = await axios.get('http://127.0.0.1:8000/api/v3/chat/', {
       params: {    
@@ -252,9 +259,7 @@ export default {
         const receiverId = this.recevier_id; 
         const content = this.content; 
         const senderId = this.userId; 
-        console.log(receiverId)
-        console.log(content)
-        console.log("Sender Id ",senderId)
+        
         // Make the API call to send the message
         const response = await axios.post('http://localhost:8000/api/v3/chat/', {
           sender: senderId,
@@ -277,6 +282,14 @@ export default {
     getFirstLetter(username) {
       return username.charAt(0).toUpperCase();
     },
+
+    // Send on enter button press
+
+     sendEnter(event) {
+      if (event.key === 'Enter') {
+        this.sendMessage();
+      }
+    }
   },
 };
 </script>

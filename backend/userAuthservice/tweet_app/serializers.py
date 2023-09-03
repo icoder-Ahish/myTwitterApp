@@ -1,14 +1,4 @@
-# from rest_framework import serializers
-# from tweet_app.models import tweetModel
 
-
-# # Create serilizers for UserAuth
-
-# class tweetSerializers(serializers.HyperlinkedModelSerializer):
-#     user_id = serializers.ReadOnlyField()
-#     class Meta:
-#         model = tweetModel
-#         fields = ('id', 'author', 'body', 'created', 'updated')
 
 from rest_framework import serializers
 from .models import TweetModel
@@ -22,4 +12,4 @@ class TweetSerializer(serializers.ModelSerializer):
     class Meta:
         model = TweetModel
         # Include 'author' field in the 'fields' option
-        fields = ('id', 'author', 'body', 'created', 'updated')
+        fields = ('id', 'author', 'body', 'created', 'updated', 'users_like', )

@@ -2,17 +2,17 @@
   <!-- wrapup Container  -->
   <div class="leftsidebar flex mt-5">
     <!-- left side bar -->
-    <leftsideBar />
+    <leftsideBar @focus-input="focusInput"/>
 
     <!-- Middle bar -->
     <div
-      class="middlebar ml-10 w-[600px] bg-white rounded-lg overflow-y-scroll border-red-300 border-4 hover:border-red-700 "
+      class="middlebar ml-10 w-[600px] bg-white rounded-lg overflow-y-scroll over border-red-300 border-4 hover:border-red-700 "
     >
       <!-- Tweet Section -->
       <div class=" ">
         <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
           <h1 class="text-xl font-bold">Home</h1>
-          <i class="far fa-star text-xl text-blue" @click="pageRefresh"></i>
+          <i class="far fa-star text-xl text-blue" ></i>
         </div>
       </div>
       <div class="px-5 py-3 border-b-8 border-lighter flex">
@@ -28,17 +28,16 @@
               type="text"
               v-model="body"
               placeholder="What's up?"
-              class="mt-3 pb-3 w-full border-black border-2 hover:bg-slate-600 hover:text-white focus:outline-none"
-            />
+              class="mt-3 pl-1  pb-3 w-full border-black border-2 hover:bg-slate-400 hover:text-white focus:outline-none focus:bg-slate-400 focus:text-white "
+              @keydown.enter.prevent="sendOnEnter"
+              ref="inputField" 
+              />
             <div class="flex items-center">
-              <a href=""> <i class="text-lg text-blue mr-4 far fa-image"></i></a>
-              <a href=""> <i class="text-lg text-blue mr-4 fas fa-film"></i></a>
-              <a href=""> <i class="text-lg text-blue mr-4 far fa-chart-bar"></i></a>
-              <a href=""> <i class="text-lg text-blue mr-4 far fa-smile"></i></a>
+              
               <button
                 type="button"
-                @click="addTweet"
-                class="bg-blue-950 hover:bg-blue-600 rounded-lg px-5 hover:text-stone-100  text-white"
+                @click.prevent="addTweet"
+                class="bg-blue-950 hover:bg-blue-600 rounded-lg mt-2 px-5 hover:text-stone-100  text-white"
               >
                 Tweet
               </button>
@@ -68,26 +67,35 @@
             </p>
             <div class="flex items-center justify-between w-full">
               <div class="flex items-center text-sm text-dark">
-                <button href=""><i class="far fa-comment mr-3"></i></button>
+                <button @click.prevent="addComments(tweet.id)"><i class="far fa-comment mr-3"></i></button>
                 <p>1</p>
               </div>
+
               <div class="flex items-center text-sm text-dark">
-                <button href=""><i class="fas fa-retweet mr-3"></i></button>
+                <button href="" ><i class="fas fa-retweet mr-3"></i></button>
                 <p>0</p>
               </div>
               <div class="flex items-center text-sm text-dark">
-                <button href=""><i class="fas fa-heart mr-3"></i></button>
-                <p>2</p>
+          
+                <button @click="likeTweet(tweet.id)" v-if="!tweet.users_like.includes(userIdNumber)">
+                      <i class="far fa-thumbs-up mr-3"></i>
+                </button>
+                <button @click="unlikeTweet(tweet.id)" v-else>
+                      <i class="fas fa-thumbs-down mr-3"></i>
+                </button>
+                
+               <p>{{ tweet.users_like.length  }}</p>
               </div>
+            
               <div class="flex items-center  text-dark">
-                <button href="" @click.prevent="deleteTweet(tweet.id)"> <i class="fa-solid fa-trash mr-3"></i> </button>
+                <button @click.prevent="deleteTweet(tweet.id)"> <i class="fa fa-trash mr-3"></i> </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div
+      <!-- <div
         v-for="(follow, index) in following"
         :key="index"
         class="w-full p-4 border-b hover:bg-lighter flex"
@@ -123,7 +131,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
+
     </div>
 
     <!-- right side bar -->
@@ -179,9 +188,10 @@
                   </div>
                 </div>
 
-        <button class="p-3 w-full hover:bg-lighter text-left text-blue border-t border-lighter" type="button" @click.prevent="followbtn">
-          Show More
-        </button>
+
+        
+
+
       </div>
     </div>
   </div>
@@ -208,8 +218,8 @@ export default {
   data() {
     return {
       username: '',
-      userId: '',
-      status: 'Follow',
+      userId: null,
+     
       dropdown: false,
       body: '',
       trending: [
@@ -225,18 +235,47 @@ export default {
       //   {src: 'https://randomuser.me/api/portraits/men/63.jpg', name: 'Ezy Pzy', handle: '@ezypzy', time: '2.7 hr', tweet: 'Get Ready for the tech revolution', comments: '10,000', retweets: '100,002', like: '200,003'},
       // ],
       tweetList: [],
+      userIdNumber: null,
       
     }
   },
   created() {
     this.username = localStorage.getItem('username')
+    this.userId = localStorage.getItem('user_id')
+    this.userIdNumber = parseInt(this.userId)
     this.fetchTweets();
     this.fetchUsers();
   },
+  // mounted() {
+  //   window.addEventListener('keydown', this.sendOnEnter);
+  // },
+
+  // beforeUnmount() {
+  //   window.removeEventListener('keydown', this.sendOnEnter);
+  // },
+
   methods: {
-    pageRefresh(){
-      window.location.reload();
+    focusInput() {
+      this.$refs.inputField.focus(); // Set focus on the input field
     },
+    likeTweet(tweetID) {
+      const data = {
+          "user_id" : this.userId       }
+        axios.post(`http://localhost:8000/api/v2/tweet/${tweetID}/like/`,data)
+        .then((response)=>{          
+          this.fetchTweets();
+        })        
+    },
+    unlikeTweet(tweetID) {
+      const data = {
+          "user_id" : this.userId
+        }
+        axios.post(`http://localhost:8000/api/v2/tweet/${tweetID}/unlike/`,data)
+        .then((response)=>{         
+          this.fetchTweets();
+        })
+    },
+  
     async addTweet() {
       const userId = localStorage.getItem('user_id')
       const tweetContent = this.body
@@ -303,15 +342,16 @@ export default {
         });
     },
     deleteTweet(tweetid){
-      axios.delete(`http://localhost:8000/api/v2/tweet/${tweetid}`)
+      axios.delete(`http://localhost:8000/api/v2/tweet/${tweetid}/`)
         .then(()=>{
-          console.log("Tweet deleted successfully")
+        
           this.fetchTweets()
         })
         .catch((error) => {
           console.error('Error fetching tweets:', error.response.data)
         })
      },
+    
      viewUser(userId, username){
         this.$router.push({
           name: 'userview',
@@ -320,7 +360,28 @@ export default {
             username
           }
         })
-     }
+     },
+     addComments(tweetId){
+        this.$router.push({
+          name: 'comments',
+          params:{
+            tweetId,
+            
+          }
+        })
+     },
+
+     sendOnEnter() {
+      
+        this.addTweet();
+      
+    }
   }
 }
+
+// Toggle dropdown
+
+
 </script>
+
+<style></style>
