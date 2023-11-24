@@ -24,6 +24,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         return profile.user.following.count()
 
 class ContactSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
+    
     class Meta:
         model = Contact
-        fields = '__all__'
+        fields = ['user_from', 'user_to', 'is_followers', 'message']
+
+    def get_message(self, obj):
+        user_from_name = obj.user_from.username
+        user_to_name = obj.user_to.username
+        return f'{user_from_name} follows {user_to_name}'
+ 

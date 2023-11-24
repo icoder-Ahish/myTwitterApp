@@ -7,7 +7,7 @@
     <!-- Middle bar -->
     <div
       class="middlebar ml-10 w-[600px] bg-white rounded-lg overflow-y-scroll over border-red-300 border-4 hover:border-red-700 "
-    >
+      style="height: 680px;" >
       <!-- Tweet Section -->
       <div class=" ">
         <div class="px-5 py-3 border-b border-lighter flex items-center justify-between">
@@ -39,12 +39,14 @@
                 @click.prevent="addTweet"
                 class="bg-blue-950 hover:bg-blue-600 rounded-lg mt-2 px-5 hover:text-stone-100  text-white"
               >
-                Tweet
+                Post
               </button>
             </div>
           </form>
         </div>
       </div>
+
+      <!-- tweet list -->
       <div class="flex flex-col-reverse">
         <div
           v-for="(tweet, index) in tweetList"
@@ -62,19 +64,34 @@
               <i class="fas fa-angle-down text-dark ml-auto"></i>
             </div>
             <a href=""></a>
-            <p class="py-2">
+            <p class="py-2 p-4 bg-gray-600 text-white mt-2">
               {{ tweet.body }}
+            </p>
+            <p class="py-2">
+              {{ tweet.retweet }}
             </p>
             <div class="flex items-center justify-between w-full">
               <div class="flex items-center text-sm text-dark">
                 <button @click.prevent="addComments(tweet.id)"><i class="far fa-comment mr-3"></i></button>
-                <p>1</p>
+                <!-- <p>1</p> -->
               </div>
 
               <div class="flex items-center text-sm text-dark">
-                <button href="" ><i class="fas fa-retweet mr-3"></i></button>
+                <button href="" @click="toggleModal(tweet.id)"><i class="fas fa-retweet mr-3"></i></button>
                 <p>0</p>
+                <div class="lg:w-full relative">
+                <div v-if="dropdown === true"
+                  class="absolute bottom-0 left-0 w-64 rounded-lg shadow-md border-lightest bg-white mb-16">
+                  <button @click="dropdown = false"
+                    class="flex items-center w-full hover:bg-lightest p-2 focus:outline-none">
+                    <button>repost</button>
+                    <button>Quote</button>
+                 
+                  </button> 
+                </div> 
+    </div>
               </div>
+
               <div class="flex items-center text-sm text-dark">
           
                 <button @click="likeTweet(tweet.id)" v-if="!tweet.users_like.includes(userIdNumber)">
@@ -89,6 +106,53 @@
             
               <div class="flex items-center  text-dark">
                 <button @click.prevent="deleteTweet(tweet.id)"> <i class="fa fa-trash mr-3"></i> </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="retweetList.length>0" class="dividar bg-slate-500 h-6 flex  justify-center">
+        <p class="">  Your Retweets </p>
+      </div>
+      <!-- Retweet list -->
+      <div class="flex flex-col-reverse">
+        <div
+          v-for="(retweet, index) in retweetList"
+          :key="index"
+          class="w-full p-4 border-b hover:bg-lighter flex"
+        >
+          <div class="flex-none mr-4">
+            <img src="../../public/userAvtar2.png" class="h-12 w-12 rounded-full flex-none" />
+          </div>
+          <div class="w-full">
+            <div class="flex items-center w-full">
+              <p class="font-semibold">{{ username }}</p>
+              <p class="text-sm text-dark ml-2">@{{ username }}</p>
+              <p class="text-sm text-dark ml-2">{{ formatTimeAgo(retweet.created) }}</p>
+              <i class="fas fa-angle-down text-dark ml-auto"></i>
+            </div>
+            <a href=""></a>
+           
+            <p class="py-2 p-4 bg-gray-600 text-white mt-2">
+              {{ retweet.retweet }}
+            </p>
+            <div class="flex items-center justify-between w-full">
+          
+
+              <div class="flex items-center text-sm text-dark">
+          
+                <button @click="likeRetweet(retweet.id)" v-if="!retweet.users_like.includes(userIdNumber)">
+                      <i class="far fa-thumbs-up mr-3"></i>
+                </button>
+                <button @click="unlikeRetweet(retweet.id)" v-else>
+                      <i class="fas fa-thumbs-down mr-3"></i>
+                </button>
+                
+               <p>{{ retweet.users_like.length  }}</p>
+              </div>
+            
+              <div class="flex items-center  text-dark">
+                <button @click.prevent="deleteRetweet(retweet.id)"> <i class="fa fa-trash mr-3"></i> </button>
               </div>
             </div>
           </div>
@@ -136,43 +200,18 @@
     </div>
 
     <!-- right side bar -->
-    <div
+    <div style="height: 680px;"
       class="flex-shrink rounded-lg w-[400px] ml-10 bg-white overflow-y-scroll border-red-300 border-4 hover:border-red-700"
     >
-      <input
-        class="pl-12 bg-slate-500 mt-3 rounded-full w-full p-2 bg-lighter text-sm mb-4 hover:bg-slate-700 hover:text-white"
-        placeholder="Search Twitter"
-      />
-      <i class="fas fa-search absolute top-[42px] right-[520px]"></i>
-      <div class="w-full rounded-lg bg-lightest">
-        <div class="flex items-center justify-between p-3">
-          <p class="text-lg font-bold">Trends for You</p>
-          <i class="fas fa-cog text-lg text-blue"></i>
-        </div>
-        <button
-          v-for="(trend, index) in trending"
-          :key="index"
-          class="w-full flex justify-between hover:bg-lighter p-3 border-t border-lighter"
-        >
-          <div>
-            <p class="text-xs text-left leading-tight text-dark">{{ trend.top }}</p>
-            <p class="font-semibold text-sm text-left leading-tight">{{ trend.title }}</p>
-            <p class="text-left text-sm leading-tight text-dark">{{ trend.bottom }}</p>
-          </div>
-          <i class="fas fa-angle-down text-lg text-dark"></i>
-        </button>
-        <button class="p-3 w-full hover:bg-lighter text-left text-blue border-t border-lighter">
-          Show More
-        </button>
-      </div>
+      
+     
       <div class="w-full rounded-lg bg-lightest my-4">
         <div class="p-3">
           <p class="text-lg font-bold">Who to Follow</p>
         </div>
 
         <!-- Follow User Display -->
-        <div>
-    <!-- Fetch and display the top 3 users -->
+            <div>
                   <div v-for="user in follow" :key="user.id" class="w-full flex hover:bg-lighter p-3 border-t border-lighter">
                     <img :src="`/public/anonymous-avtar.jpeg`" class="w-12 h-12 rounded-full border border-lighter" />
                     <div class="hidden lg:block ml-4">
@@ -186,13 +225,54 @@
                       View
                     </button>
                   </div>
-                </div>
-
-
-        
-
-
+              </div>
       </div>
+    </div>
+  </div>
+
+  <!-- my model -->
+  <div id="modal" v-show="isModalVisible"  tabindex="-1" class="fixed top-0 left-0 right-0 bottom-0 
+  z-50 flex  justify-center  p-4 overflow-x-hidden overflow-y-auto md:inset-0">
+    <div class="relative w-[700px] ">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button @click="toggleModal" type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-6 ">
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400"> Repost</h3>
+                <div class="mb-6">
+                  <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                      <label for="comment" class="sr-only">Write Your comment....</label>
+                      <textarea id="comment" rows="6" v-model="retweet_content"
+                          class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                          placeholder="Write a comment..." required></textarea>
+                  </div>
+                
+              </div>
+              <article v-if="specificTweet" class="p-6 mb-6 ml-10 text-base bg-white rounded-lg dark:bg-gray-600" >
+                  <footer class="flex justify-between items-left mb-2">
+                      <div class="flex items-center">
+                          <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white"><img
+                                  class="mr-2 w-6 h-6 rounded-full"
+                                  src="../../public/download1.jpeg"
+                                  alt="">{{username}}</p>
+                          <p class="text-sm text-gray-600 dark:text-gray-400"><time pubdate datetime="2022-02-08"
+                                  title="February 8th, 2022">{{ formatTimeAgo(specificTweet.created) }}</time></p>
+                      </div>            
+                  </footer>
+                  
+                  <p class="text-gray-500 dark:text-gray-400">{{specificTweet.body}}</p>
+              </article>
+
+              <button type="submit"  @click.prevent="retweet(specificTweet.id)"
+                      class=" py-2.5 px-4 text-xs font-medium text-center text-blsck bg-white rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                      Post
+              </button>
+            </div>
+        </div>
     </div>
   </div>
 </template>
@@ -217,16 +297,15 @@ export default {
   },
   data() {
     return {
+      dropdown: false,
+      isModalVisible: false,
       username: '',
       userId: null,
      
-      dropdown: false,
+      retweet_id: null,
       body: '',
       trending: [
-        { top: 'Techies all around', title: 'Tech', bottom: '#The technology' }
-        // {top: 'Apps', title: 'Flutter', bottom: '100K Tweets'},
-        // {top: 'Animals', title: 'Shark larger than Great white', bottom: '115k tweets'},
-        // {top: 'The techies nation', title: '2m servers', bottom: '30k tweets'},
+       
       ],
       follow: [],
       // following: [
@@ -235,26 +314,34 @@ export default {
       //   {src: 'https://randomuser.me/api/portraits/men/63.jpg', name: 'Ezy Pzy', handle: '@ezypzy', time: '2.7 hr', tweet: 'Get Ready for the tech revolution', comments: '10,000', retweets: '100,002', like: '200,003'},
       // ],
       tweetList: [],
+      retweetList: [],
       userIdNumber: null,
-      
+      retweet_content: [],
     }
   },
   created() {
-    this.username = localStorage.getItem('username')
-    this.userId = localStorage.getItem('user_id')
+    this.username = sessionStorage.getItem('username')
+    this.userId = sessionStorage.getItem('user_id')
     this.userIdNumber = parseInt(this.userId)
     this.fetchTweets();
+    this.fetchRetweets();
     this.fetchUsers();
   },
-  // mounted() {
-  //   window.addEventListener('keydown', this.sendOnEnter);
-  // },
+ 
+   computed: {
+    specificTweet() {
+      // Find the tweet with id: 5 in the tweetList
+      return this.tweetList.find((tweet) => tweet.id === this.retweet_id);
+    },
+  },
 
-  // beforeUnmount() {
-  //   window.removeEventListener('keydown', this.sendOnEnter);
-  // },
+  methods: {  
+    toggleModal(retweetId) {
+            this.isModalVisible = !this.isModalVisible;
 
-  methods: {
+            this.retweet_id = retweetId
+    },
+   
     focusInput() {
       this.$refs.inputField.focus(); // Set focus on the input field
     },
@@ -277,7 +364,7 @@ export default {
     },
   
     async addTweet() {
-      const userId = localStorage.getItem('user_id')
+      const userId = sessionStorage.getItem('user_id')
       const tweetContent = this.body
       axios
         .post('http://localhost:8000/api/v2/tweet/', {
@@ -285,22 +372,60 @@ export default {
           content: tweetContent
         })
         .then((response) => {
-          this.body = '',
-          console.log('Tweet created successfully:', response.data)
-          this.fetchTweets();
+          this.body = '';
+          if(response.data.error)
+          {
+            alert(response.data.error)
+          }else{
+            this.fetchTweets();
+          };
+         
         })
         .catch((error) => {
-          console.error('Error creating tweet:', error.response.data)
+          console.log('Error creating tweet:', error.response.data)
         })
     },
     fetchTweets() {
-      const  userId = localStorage.getItem('user_id');
+      const  userId = sessionStorage.getItem('user_id');
       // console.log(userId);
       axios
         .get(`http://localhost:8000/api/v2/tweet/?author_id=${userId}`)
         .then((response) => {
           this.tweetList = response.data.reverse()
+         
         })
+        .catch((error) => {
+          console.error('Error fetching tweets:', error.response.data)
+
+          // alert("Your tweet contain bad words, Pease use apporoprit language");
+        })
+    },
+    retweet(specificTweet_id){
+      console.log(specificTweet_id);
+      const retweet_body = this.retweet_content;
+      console.log(retweet_body);
+      const data ={
+        "author": this.userId,
+        "tweet": specificTweet_id,
+        "retweet": retweet_body
+      }
+      axios.post('http://localhost:8000/api/v2/retweet/',data)
+      .then((response)=>{
+        this.retweet_content = '';
+        // this.retweetList = response.data
+        
+        this.isModalVisible = !this.isModalVisible;
+        this.fetchRetweets();
+      })
+    },
+    fetchRetweets() {
+      const  userId = sessionStorage.getItem('user_id');
+      axios
+        .get(`http://localhost:8000/api/v2/retweet/?author_id=${userId}`)
+        .then((response) => {
+       
+          this.retweetList = response.data.reverse();
+       })
         .catch((error) => {
           console.error('Error fetching tweets:', error.response.data)
         })
@@ -328,14 +453,9 @@ export default {
         .get('http://localhost:8000/api/v1/users/') 
         .then((response) => {
           const sortedUsers = response.data.sort((a, b) => b.followers_count - a.followers_count);
-          
-          // console.log(sortedUsers)
-          // Get the top 3 users from the sorted array
-        // const username = localstorage.getItem('username')
         const filteredUsers = sortedUsers.filter((user) => user.username !== this.username);
         // console.log(filteredUsers)
-        this.follow = filteredUsers.slice(0, 3);
-          
+        this.follow = filteredUsers.slice(0, 3);       
         })
         .catch((error) => {
           console.error('Error fetching users:', error.response.data);
@@ -346,6 +466,36 @@ export default {
         .then(()=>{
         
           this.fetchTweets()
+        })
+        .catch((error) => {
+          console.error('Error fetching tweets:', error.response.data)
+        })
+     },
+     likeRetweet(retweetID) {
+      
+      const data = {
+          "user_id" : this.userId       }
+        axios.post(`http://localhost:8000/api/v2/retweet/${retweetID}/like/`,data)
+        .then((response)=>{   
+              
+          this.fetchRetweets();
+        })        
+    },
+    unlikeRetweet(retweetID) {
+    
+      const data = {
+          "user_id" : this.userId
+        }
+        axios.post(`http://localhost:8000/api/v2/retweet/${retweetID}/unlike/`,data)
+        .then((response)=>{         
+          this.fetchRetweets();
+        })
+    },
+    deleteRetweet(retweetid){
+      axios.delete(`http://localhost:8000/api/v2/retweet/${retweetid}/`)
+        .then(()=>{
+        
+          this.fetchRetweets()
         })
         .catch((error) => {
           console.error('Error fetching tweets:', error.response.data)
@@ -371,15 +521,11 @@ export default {
         })
      },
 
-     sendOnEnter() {
-      
-        this.addTweet();
-      
+     sendOnEnter() {     
+        this.addTweet();     
     }
   }
 }
-
-// Toggle dropdown
 
 
 </script>

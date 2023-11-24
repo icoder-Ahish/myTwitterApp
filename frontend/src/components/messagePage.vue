@@ -125,7 +125,7 @@
             </div>
             <div class="flex-grow ml-4">
               <div class="relative w-full">
-                <input  type="text" class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10" v-model="content" />
+                <input  type="text" class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10" v-model="content" required/>
                 <button  class="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"    >
                   <svg
                     class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"   xmlns="http://www.w3.org/2000/svg" >
@@ -184,8 +184,8 @@ export default {
     };
   },
   created() {
-    this.username = localStorage.getItem('username');
-    this.userId = localStorage.getItem('user_id');
+    this.username = sessionStorage.getItem('username');
+    this.userId = sessionStorage.getItem('user_id');
     this.fetchUsers();
     this.firstLetter = this.getFirstLetter(this.username);
   },

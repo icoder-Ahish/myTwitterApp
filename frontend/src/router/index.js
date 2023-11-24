@@ -12,6 +12,7 @@ import homePage from '@/views/homePage.vue'
 import profilePage from '../components/profilePage.vue'
 import userviewPage from '../components/userviewPage.vue'
 import commentsPage from '../components/commentPage.vue'
+import notificationsPage from '../components/notificationPage.vue'
 // import homePag from '@/components/homePage.vue'
 
 
@@ -56,6 +57,11 @@ const routes = [
     path: '/home',
     component: homePage
   },
+  {
+    name: 'notification',
+    path: '/notification',
+    component: notificationsPage
+  },
 
 //   {
 //     name: 'manage',
@@ -97,9 +103,9 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     // Check if the user is logged in
-    const token = localStorage.getItem('token');
-    const user_id = localStorage.getItem('user_id')
-    const username = localStorage.getItem('username')
+    const token = sessionStorage.getItem('token');
+    const user_id = sessionStorage.getItem('user_id')
+    const username = sessionStorage.getItem('username')
 
     if (token || user_id || username) {
       // User is logged in, allow access to the requested route

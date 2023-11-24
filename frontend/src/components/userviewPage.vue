@@ -3,7 +3,7 @@
     <leftsideBar/>
 
 <!-- User card-->
-<div class="ml-[100px]">
+<div class="ml-[100px] mt-5 bg-gray-800 p-2">
     <div class="mx-2">
             <h2 class="mb-0 text-xl font-bold text-white"><span> {{user_data.username}} </span></h2>
             
@@ -26,10 +26,10 @@
             </div>
             <!-- Follow Button -->
             <div class="flex flex-col text-right">
-                <button @click.prevent="follow"  v-if="isfollowing" class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring   max-w-max border bg-transparent border-blue-500 text-blue-500  hover:border-blue-800  items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                <button @click.prevent="follow"  v-if="isfollowing" class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring   max-w-max border bg-transparent border-blue-900 text-blue-900  hover:border-blue-800  items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                     Follow
                 </button>
-                <button @click.prevent="unfollow" v-else  class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring   max-w-max border bg-transparent border-blue-500 text-blue-500  hover:border-blue-800  items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
+                <button @click.prevent="unfollow" v-else  class="flex justify-center  max-h-max whitespace-nowrap focus:outline-none  focus:ring   max-w-max border bg-transparent border-blue-900 text-blue-900  hover:border-blue-800  items-center hover:shadow-lg font-bold py-2 px-4 rounded-full mr-0 ml-auto">
                     Following
                 </button>
                 
@@ -37,23 +37,23 @@
         </div>
 
         <!-- Profile info -->
-        <div class="space-y-1 justify-center w-full mt-3 ml-3">
+        <div class="space-y-1 justify-center w-[600px] border-2 border-dotted p-5 mt-3 ml-3">
             <!-- User basic-->
             <div>
                 <h2 class="text-xl leading-6 font-bold text-white">{{user_data.username}} </h2>
-                <p class="text-sm leading-5 font-medium text-gray-600">@{{user_data.username}} </p>
+                <p class="text-sm leading-5 font-medium text-gray-400 ">@{{user_data.username}} </p>
             </div>
             <!-- Description and others -->
             <div class="mt-3">
                 <p class="text-white leading-tight mb-2">{{ userProfile.bio }} </p>
-                <div class="text-gray-600 flex">
+                <div class="text-gray-300 flex">
                     <!-- <span><a href="" target="#" class="leading-5 ml-1 text-blue-400">www.myProfile.com</a></span> -->
                      <span class="leading-5 ml-1">Joined {{getFormattedDate(user_data.date_joined) ?? 0}}</span>
                 </div>
             </div>
             <div class="pt-3 flex justify-start items-start w-full divide-x divide-gray-800 divide-solid">
-                <div class="text-center pr-3" ><span class="font-bold text-white">{{ userProfile.following_count ?? 0 }}</span><span class="text-gray-600"> Following</span></div>
-                <div class="text-center px-3"><span class="font-bold text-white">{{ userProfile.followers_count ?? 0}} </span><span class="text-gray-600"> Followers</span></div>
+                <div class="text-center pr-3" ><span class="font-bold text-white">{{ userProfile.following_count ?? 0 }}</span><span class="text-gray-300 "> Following</span></div>
+                <div class="text-center px-3"><span class="font-bold text-white">{{ userProfile.followers_count ?? 0}} </span><span class="text-gray-300"> Followers</span></div>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
  <!-- tweet list -->
 
  <div v-if="tweetList.length > 0">
- <ul class="list-none ml-5 border mt-24 overflow-scroll h-[600px] ">
+ <ul class="list-none ml-5 border mt-5 overflow-scroll h-[650px] w-[400px] ">
    <li v-for="(tweet,index) in tweetList" :key="index">                  
     <div class="flex flex-col-reverse">
         <div class="w-full p-4 border-b hover:bg-lighter flex" >
@@ -81,7 +81,7 @@
             </p>
             <div class="flex items-center justify-between w-full">
               <div class="flex items-center text-sm text-white">
-                <button href=""><i class=" far fa-comment mr-3"></i></button>
+                <button @click.prevent="addComments(tweet.id)"><i class="far fa-comment mr-3"></i></button>
                 <p>1</p>
               </div>
               <div class="flex items-center text-sm text-white">
@@ -133,7 +133,7 @@ export default {
      }
     },
     created() {
-    this.userId = localStorage.getItem('user_id')    
+    this.userId = sessionStorage.getItem('user_id')    
     this.viewUserId = this.$route.params.userId;
     this.username =  this.$route.params.username;
     this.userIdNumber = parseInt(this.userId)
@@ -209,6 +209,8 @@ export default {
             "created": timestamp
         }).then((response)=>{
           this.follow_data= response.data;
+          this.profileFetch(this.viewUserId)
+          
         })
         this.isfollowing = false
 
@@ -256,11 +258,21 @@ export default {
             "created": timestamp
         }).then((response)=>{
           this.unfollow_data=response.data;
+          this.profileFetch(this.viewUserId)
         })
         this.isfollowing = true
 
         // this.fetchTweets(this.viewUserId)
     },
+    addComments(tweetId){
+        this.$router.push({
+          name: 'comments',
+          params:{
+            tweetId,
+            
+          }
+        })
+     },
   }
 
 }

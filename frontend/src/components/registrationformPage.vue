@@ -1,4 +1,4 @@
-<template>
+<template> 
     <div class="bg-gray-500 w-full  flex flex-col ">
         <div class="bg-slate-900 mt-11 pt-16 ml-96 flex flex-col mr-96 rounded-lg">
                 <img class="w-11 rounded-3xl ml-72" src="../../public/twitterlogo.jpeg" alt="">
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     registerFrom() {
-        console.log("CLick")
+        
       if (!this.first_name || !this.email || !this.username || !this.password || !this.cpassword) {
         this.error = 'Please add all fields'
       } else {
@@ -100,24 +100,21 @@ export default {
     },
     saveFormData(formData) {
         axios
-          .post('http://127.0.0.1:8000/api/v1/users/', formData)
-
-
-          
+          .post('http://127.0.0.1:8000/api/v1/users/', formData)         
           .then((response) => {
-            console.log(response.data);
+           
             if (response.data.email_error) {
-              // Handle email error
+           
               this.email_error = "Email or Username already exist";              
             } else if (response.data.username_error) {
-              // Handle username error
+            
               this.username_error = "Email or Username already exist";
-              // this.error = response.data.username_error;
+              
             } else if (response.data.success) {
-              // Handle success
+             
               this.success = response.data.success;
             }
-            // window.location.reload()
+            
           })
           .catch((error) => {
             console.error(error);

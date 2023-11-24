@@ -62,8 +62,7 @@
                
                 <span class="text-white mb-20  ml-56">Have an account already?  
                 <span class="font-extrabold text-blue-500 hover:text-white"> 
-                <router-link to="/login" >Log in
-                </router-link></span></span>
+                <router-link to="/login" >Log in </router-link></span></span>
         </div>
     </div>
 

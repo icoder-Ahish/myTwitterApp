@@ -3,7 +3,7 @@
     <leftsideBar/>
 
 <!-- User card-->
-<div class="ml-[100px]">
+<div class="ml-[100px] border-2  mt-5 bg-gray-800 p-2">
     <div class="mx-2">
             <h2 class="mb-0 text-xl font-bold text-white"><span> {{user_data.username}} </span></h2>
             <!-- <p class="mb-0 w-48 text-xs text-gray-400">0 Tweets_count</p> -->
@@ -31,7 +31,7 @@
         </div>
 
         <!-- Profile info -->
-        <div class="space-y-1 justify-center w-full mt-3 ml-3">
+        <div class="space-y-1 justify-center  w-[600px] mt-3 ml-3">
             <!-- User basic-->
             <div>
                 <h2 class="text-xl leading-6 font-bold text-white">{{user_data.username}} </h2>
@@ -55,7 +55,7 @@
  </div>
  <!-- tweet list -->
  <div v-if="tweetList.length > 0">
- <ul class="list-none ml-5 border mt-24 overflow-scroll h-[600px]">
+ <ul class="list-none ml-5 border m-5 overflow-scroll h-[650px] w-[400px]">
    <li v-for="(tweet,index) in tweetList" :key="index">                  
     <div class="flex flex-col-reverse">
         <div class="w-full p-4 border-b hover:bg-lighter flex" >
@@ -86,7 +86,7 @@
                 <p>2</p>
               </div>
               <div class="flex items-center text-white">
-                <button href="" @click.prevent="deleteTweet(tweet.id)"> <i class="fa-solid fa-trash mr-3"></i> </button>
+                <button  @click.prevent="deleteTweet(tweet.id)"> <i class="fa fa-trash mr-3"></i> </button>
               </div>
             </div>
           </div>
@@ -114,8 +114,8 @@ export default {
      }
     },
     created() {
-    this.username = localStorage.getItem('username');
-    this.userId = localStorage.getItem('user_id');
+    this.username = sessionStorage.getItem('username');
+    this.userId = sessionStorage.getItem('user_id');
     this.profileFetch(this.userId)
     this.user_dataFetch(this.userId)
     this.fetchTweets(this.userId)

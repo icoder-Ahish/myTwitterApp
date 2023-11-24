@@ -91,9 +91,9 @@ export default {
           const user_id = this.userdata.id
           const username = this.userdata.username
 
-          localStorage.setItem('token',token );
-          localStorage.setItem('user_id',user_id );
-          localStorage.setItem('username',username );
+          sessionStorage.setItem('token',token );
+          sessionStorage.setItem('user_id',user_id );
+          sessionStorage.setItem('username',username );
 
           
           this.setAuthToken(token);

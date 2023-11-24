@@ -11,7 +11,7 @@ router.register(r'contacts', ContactViewSet, basename="Contacts")
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('api/contacts/<int:pk>/followers_following/', ContactViewSet.as_view({'get': 'followers_following'}), name='followers-following')
+   path('notification/', ContactViewSet.as_view({'get': 'get_follow_message'}), name='contact-follow-message')
 ]
 
 # Include the router URLs

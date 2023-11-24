@@ -27,8 +27,8 @@ class TweetModel(models.Model):
         return self.users_like.all().count()
 
 
-class CommentModel(models.Model):
-    tweet = models.ForeignKey('TweetModel', on_delete=models.CASCADE, related_name='comments')
+class Comment(models.Model):
+    tweet = models.ForeignKey(TweetModel, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(verbose_name="comment")
     created = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -41,36 +41,34 @@ class CommentModel(models.Model):
 
 
 
-
-
     
     
     
-class Mention(models.Model):
-    author = models.ForeignKey(User,
-                               related_name='mentions',
-                               on_delete=models.CASCADE)
-    tweet = models.ForeignKey(TweetModel,
-                              related_name='mentions',
-                              on_delete=models.CASCADE)
-    mention = models.CharField(max_length=280, verbose_name="mention")
-    users_like = models.ManyToManyField(User,
-                                 related_name='mentions_liked',
-                                 blank=True)
-    created = models.DateTimeField(auto_now_add=True, db_index=True)
-    updated = models.DateTimeField(auto_now=True)
+# class Mention(models.Model):
+#     author = models.ForeignKey(User,
+#                                related_name='mentions',
+#                                on_delete=models.CASCADE)
+#     tweet = models.ForeignKey(TweetModel,
+#                               related_name='mentions',
+#                               on_delete=models.CASCADE)
+#     mention = models.CharField(max_length=280, verbose_name="mention")
+#     users_like = models.ManyToManyField(User,
+#                                  related_name='mentions_liked',
+#                                  blank=True)
+#     created = models.DateTimeField(auto_now_add=True, db_index=True)
+#     updated = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ('-created',)
+#     class Meta:
+#         ordering = ('-created',)
 
-    def __str__(self):
-        return f'{self.author.username} mention to {self.tweet.body[:10]} with {self.mention[:10]}'
+#     def __str__(self):
+#         return f'{self.author.username} mention to {self.tweet.body[:10]} with {self.mention[:10]}'
 
     
-    def like_count(self):
-        return self.users_like.all().count()
+#     def like_count(self):
+#         return self.users_like.all().count()
 
-class Retweet(models.Model):
+class RetweetModel(models.Model):
     author = models.ForeignKey(User,
                                related_name='retweet',
                                on_delete=models.CASCADE)
@@ -91,5 +89,5 @@ class Retweet(models.Model):
         return f'{self.author.username} retweet to {self.tweet.body[:10]} with {self.retweet[:10]}'
 
     
-    def like_count(self):
-        return self.users_like.all().count()
+#     def like_count(self):
+#         return self.users_like.all().count()
